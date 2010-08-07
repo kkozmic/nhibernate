@@ -33,7 +33,7 @@ namespace NHibernate.Test.CfgTest.Loquacious
 			configure.Proxy(p =>
 												{
 													p.Validation = false;
-													p.ProxyFactoryFactory<ByteCode.LinFu.ProxyFactoryFactory>();
+													p.ProxyFactoryFactory<ByteCode.Castle.ProxyFactoryFactory>();
 												});
 			configure.Mappings(m=>
 			                   	{
@@ -72,7 +72,7 @@ namespace NHibernate.Test.CfgTest.Loquacious
 									Is.EqualTo(typeof(DefaultCollectionTypeFactory).AssemblyQualifiedName));
 			Assert.That(configure.Properties[Environment.UseProxyValidator], Is.EqualTo("false"));
 			Assert.That(configure.Properties[Environment.ProxyFactoryFactoryClass],
-						Is.EqualTo(typeof(ByteCode.LinFu.ProxyFactoryFactory).AssemblyQualifiedName));
+						Is.EqualTo(typeof(ByteCode.Castle.ProxyFactoryFactory).AssemblyQualifiedName));
 			Assert.That(configure.Properties[Environment.QueryTranslator],
 						Is.EqualTo(typeof(ClassicQueryTranslatorFactory).AssemblyQualifiedName));
 			Assert.That(configure.Properties[Environment.DefaultCatalog], Is.EqualTo("MyCatalog"));

@@ -1,18 +1,20 @@
-using LinFu.DynamicProxy;
+using Castle.DynamicProxy;
 
 namespace NHibernate.Test.DynamicEntity
 {
 	public class ProxyHelper
 	{
-		private static readonly ProxyFactory proxyGenerator = new ProxyFactory();
+		private static readonly ProxyGenerator proxyGenerator = new ProxyGenerator();
 
-		private static T NewProxy<T>(object id)
+		public static T NewProxy<T>(object id)
 		{
-			return proxyGenerator.CreateProxy<T>(new DataProxyHandler(typeof (T).FullName, id),
-			                                     new[] {typeof (IProxyMarker), typeof (T)});
-
+			return
+				(T)
+				proxyGenerator.CreateInterfaceProxyWithoutTarget(typeof(T),
+																 new[] { typeof(IProxyMarker), typeof(T) },
+																 new DataProxyHandler(typeof(T).FullName, id));
 		}
-
+		
 		public static Person NewPersonProxy()
 		{
 			return NewProxy<Person>(0L);

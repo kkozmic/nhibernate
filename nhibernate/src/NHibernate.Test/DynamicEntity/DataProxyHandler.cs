@@ -1,9 +1,9 @@
 using System.Collections;
-using LinFu.DynamicProxy;
+using Castle.DynamicProxy;
 
 namespace NHibernate.Test.DynamicEntity
 {
-	public sealed class DataProxyHandler : LinFu.DynamicProxy.IInterceptor
+	public sealed class DataProxyHandler : Castle.DynamicProxy.IInterceptor
 	{
 		private readonly Hashtable data = new Hashtable();
 		private readonly string entityName;
@@ -26,32 +26,33 @@ namespace NHibernate.Test.DynamicEntity
 
 		#region IInterceptor Members
 
-		public object Intercept(InvocationInfo info)
+		public void Intercept(IInvocation invocation)
 		{
-			string methodName = info.TargetMethod.Name;
+			invocation.ReturnValue = null;
+			string methodName = invocation.Method.Name; 
+			
 			if ("get_DataHandler".Equals(methodName))
 			{
-				return this;
+				invocation.ReturnValue = this;
 			}
 			else if (methodName.StartsWith("set_"))
 			{
 				string propertyName = methodName.Substring(4);
-				data[propertyName] = info.Arguments[0];
+				data[propertyName] = invocation.Arguments[0];
 			}
 			else if (methodName.StartsWith("get_"))
 			{
 				string propertyName = methodName.Substring(4);
-				return data[propertyName];
+				invocation.ReturnValue = data[propertyName];
 			}
 			else if ("ToString".Equals(methodName))
 			{
-				return entityName + "#" + data["Id"];
+				invocation.ReturnValue = entityName + "#" + data["Id"];
 			}
 			else if ("GetHashCode".Equals(methodName))
 			{
-				return GetHashCode();
+				invocation.ReturnValue = GetHashCode();
 			}
-			return null;
 		}
 
 		#endregion
